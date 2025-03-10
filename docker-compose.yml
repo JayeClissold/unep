@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5001:5000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
+      - FLASK_ENV=development
+    volumes:
+      - ./backend:/app
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # Persist node_modules in container
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Helps file-watching in Docker
+      - REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
