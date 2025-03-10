@@ -46,5 +46,10 @@ def clear_chat():
     session["chat_history"] = []
     return jsonify({"message": "Chat history cleared."})
 
+@app.route("/api/history", methods=["GET"])
+def get_history():
+    # Return complete chat history stored in session
+    return jsonify({"history": session.get("chat_history", [])})
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True) # Debug to enable auto-reload

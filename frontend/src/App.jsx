@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import ChatWindow from "./components/ChatWindow";
+import ChatInput from "./components/ChatInput";
 
 function App() {
   const [input, setInput] = useState("");
@@ -8,7 +10,23 @@ function App() {
   const API_BASE_URL =
     process.env.REACT_APP_API_BASE_URL || "http://localhost:5001";
 
-  // Normally I'd use some sort of library like React Hook Form to manage the form fields
+  // Fetch chat history on mount so the complete history is available on reload.
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/history`, {
+          credentials: "include",
+        });
+        const data = await response.json();
+        if (data.history) {
+          setChatHistory(data.history);
+        }
+      } catch (error) {
+        console.error("Error fetching chat history:", error);
+      }
+    };
+    fetchHistory();
+  }, [API_BASE_URL]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -30,52 +48,27 @@ function App() {
       console.error("Error sending message:", error);
       alert("Error sending message");
     }
-    setInput("");
+    setInput(""); // Clear input after submission
     setLoading(false);
   };
 
   const clearChat = async () => {
-    await fetch(`${API_BASE_URL}/api/clear`, { method: "POST" });
-    setChatHistory([]);
+    try {
+      await fetch(`${API_BASE_URL}/api/clear`, {
+        method: "POST",
+        credentials: "include",
+      });
+      setChatHistory([]);
+    } catch (error) {
+      console.error("Error clearing chat:", error);
+    }
   };
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">UNEP chat</h1>
-      <div className="chat-window border rounded p-4 h-80 overflow-y-scroll mb-4">
-        {chatHistory.map((msg, index) => (
-          <div
-            key={index}
-            className={`mb-2 text-left ${
-              msg.role === "user" ? "text-right" : "text-left"
-            }`}
-          >
-            <span
-              className={`inline-block p-2 rounded ${
-                msg.role === "user" ? "bg-blue-200" : "bg-gray-200"
-              }`}
-            >
-              {msg.content}
-            </span>
-          </div>
-        ))}
-        {loading && <p>Loading...</p>}
-      </div>
-      <div className="flex">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="flex-grow border rounded p-2"
-          placeholder="Type your message..."
-        />
-        <button
-          onClick={sendMessage}
-          className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Send
-        </button>
-      </div>
+      <h1 className="text-2xl font-bold mb-4">UNEP Chat</h1>
+      <ChatWindow chatHistory={chatHistory} loading={loading} />
+      <ChatInput input={input} setInput={setInput} sendMessage={sendMessage} />
       <button onClick={clearChat} className="mt-4 text-red-500">
         Clear Chat
       </button>
