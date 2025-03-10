@@ -9,8 +9,8 @@ const ChatWindow = ({ chatHistory, loading }) => {
           className={`mb-2 ${msg.role === "user" ? "text-right" : "text-left"}`}
         >
           <span
-            className={`inline-block p-2 rounded ${
-              msg.role === "user" ? "bg-blue-200" : "bg-gray-200"
+            className={`inline-block p-4 rounded-xl ${
+              msg.role === "user" ? "bg-secondary-100" : "bg-primary-100"
             }`}
           >
             {msg.content}
