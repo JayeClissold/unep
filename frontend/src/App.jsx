@@ -6,6 +6,7 @@ function App() {
   const [input, setInput] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [personality, setPersonality] = useState("");
 
   const API_BASE_URL =
     process.env.REACT_APP_API_BASE_URL || "http://localhost:5001";
@@ -32,21 +33,25 @@ function App() {
     if (!input.trim()) return;
     setLoading(true);
     try {
+      const payload = { message: input, personality: personality };
       const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify(payload),
       });
-      const data = await response.json();
-      if (data.response) {
-        setChatHistory(data.history);
-      } else if (data.error) {
-        alert(`Error: ${data.error}`);
+
+      if (!response.ok) {
+        // Extract and throw a detailed error if available
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Unknown error occurred");
       }
+
+      const data = await response.json();
+      setChatHistory(data.history);
     } catch (error) {
       console.error("Error sending message:", error);
-      alert("Error sending message");
+      alert(`Error: ${error.message}`);
     }
     setInput(""); // Clear input after submission
     setLoading(false);
@@ -68,7 +73,13 @@ function App() {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">UNEP Chat</h1>
       <ChatWindow chatHistory={chatHistory} loading={loading} />
-      <ChatInput input={input} setInput={setInput} sendMessage={sendMessage} />
+      <ChatInput
+        input={input}
+        setInput={setInput}
+        sendMessage={sendMessage}
+        personality={personality}
+        setPersonality={setPersonality}
+      />
       <button onClick={clearChat} className="mt-4 text-red-500">
         Clear Chat
       </button>

@@ -62,3 +62,6 @@ cd unep
 ### Notes
 
 - I'm using port 5001 for API. Mac Airplay is now using port 5000 for some reason.
+- The chat history is stored in the Flask session which uses cookies by default. Long conversations will exceed the cookie size limit so I'd recommend using Redis or a database for storage.
+- For production, you would remove the Flask development environment settings
+- Normally, I'd use Typescript so that the code is more self-documenting than this but I opted for Javascript for simplicity here. I've been a bit more verbose with commenting than I normally would because of this.
