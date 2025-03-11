@@ -3,8 +3,8 @@ FROM node:16-alpine
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-RUN npm ci
+COPY package.json ./
+RUN npm install
 
 # Copy the rest of the source code
 COPY . .

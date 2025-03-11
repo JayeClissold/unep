@@ -1,6 +1,6 @@
 # UNEP chat
 
-This project is a simplified AI chat system for UNEP that integrates a Flask backend using the OpenAI API with a modular React frontend. The system maintains chat history across page reloads, clears the input after each submission, and allows submissions via the enter key. The solution is containerised with Docker for easy development and testing.
+This project is a simplified AI chat system for UNEP that integrates a Flask backend using the OpenAI API with a modular React frontend. The system maintains chat history across page reloads, and clears the input after each submission. The solution is containerised with Docker for easy development and testing.
 
 ## Setup & Installation
 
@@ -30,11 +30,11 @@ cd unep
 
 ## How to Use
 
-1.  **Access the App:** Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
+1.  **Access the app:** Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
 2.  **Chat Functionality:**
 
     - **Send a Message:**  
-      Type your message into the input field and either press Enter or click the **Send** button.
+      Type your message into the input field and either press enter or click the **Send** button.
     - **Chat History:**  
       On page reload, the complete chat history is fetched from the backend and displayed.
     - **Clear Chat:**  
@@ -63,5 +63,5 @@ cd unep
 
 - I'm using port 5001 for API. Mac Airplay is now using port 5000 for some reason.
 - The chat history is stored in the Flask session which uses cookies by default. Long conversations will exceed the cookie size limit so I'd recommend using Redis or a database for storage.
-- For production, you would remove the Flask development environment settings
+- For production, you would remove the Flask development environment settings.
 - Normally, I'd use Typescript so that the code is more self-documenting than this but I opted for Javascript for simplicity here. I've been a bit more verbose with commenting than I normally would because of this.
